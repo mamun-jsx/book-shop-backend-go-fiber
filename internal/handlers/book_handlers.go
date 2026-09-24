@@ -26,18 +26,38 @@ func (h *BookHandler) CreateBook(c fiber.Ctx) error {
 }
 
 // get all books
-
 func (h *BookHandler) GetAllBooks(c fiber.Ctx) error {
+	// 1. ALWAYS check the database query error first!
 	books, err := h.service.GetAllBooks()
-
-	if len(books) == 0 {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Currently We have no books Listed"})
-	}
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "could not fetch the books"})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Could not fetch the books from database",
+		})
 	}
+
+	// 2. Handle the empty state correctly using a 200 OK or 404 status
+	if len(books) == 0 {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"message": "Currently we have no books listed",
+			"data":    []models.Book{}, // Explicitly return an empty list
+		})
+	}
+
+	// 3. If books exist, return them with 200 OK
 	return c.JSON(books)
 }
+
+// func (h *BookHandler) GetAllBooks(c fiber.Ctx) error {
+// 	books, err := h.service.GetAllBooks()
+
+// 	if len(books) == 0 {
+// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"Message": "Currently We have no books Listed"})
+// 	}
+// 	if err != nil {
+// 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "could not fetch the books"})
+// 	}
+// 	return c.JSON(books)
+// }
 
 // delete a single book by id
 

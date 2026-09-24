@@ -14,7 +14,7 @@ func SetupRoutes(fiberApp *fiber.App, application *app.App) {
 	// ==================| Books API |==================
 
 	api.Post("/book", application.BookHandler.CreateBook)
-	api.Get("/books", application.BookHandler.GetAllBooks())
+	api.Get("/books", application.BookHandler.GetAllBooks)
 	api.Delete("/books/:id", application.BookHandler.DeleteBookByID)
 
 }
