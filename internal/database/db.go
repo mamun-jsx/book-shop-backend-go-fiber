@@ -3,7 +3,6 @@ package database
 import (
 	"fmt"
 	"log"
-
 	"github.com/mamun-jsx/book-shop-backend-go-fiber/config"
 	"github.com/mamun-jsx/book-shop-backend-go-fiber/internal/models"
 	"gorm.io/driver/postgres"
@@ -12,7 +11,6 @@ import (
 
 // database connection
 func Connect(cfg *config.Config) (*gorm.DB, error) {
-
 	var dltor gorm.Dialector
 
 	// if env does not have any nenon db database
