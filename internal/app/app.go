@@ -22,7 +22,7 @@ func BootstrapApp() *App {
 	cfg := config.LoadEnv()
 	db, err := database.Connect(cfg)
 	if err != nil {
-		log.Fatal("failed to connect with database : %v", err)
+		log.Fatalf("failed to connect with database: %v", err)
 	}
 	bookRepo := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepo)
