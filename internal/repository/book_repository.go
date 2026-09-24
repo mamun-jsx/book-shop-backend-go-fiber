@@ -14,20 +14,19 @@ func NewBookRepository(db *gorm.DB) *BookRepository {
 	return &BookRepository{db: db}
 }
 
-// create book to database
+// Create inserts a new book record into the database
 func (r *BookRepository) Create(book *models.Book) error {
 	return r.db.Create(book).Error
 }
 
-// get all books
+// FindAll retrieves all books from the database
 func (r *BookRepository) FindAll() ([]models.Book, error) {
 	var books []models.Book
 	err := r.db.Find(&books).Error
 	return books, err
 }
 
-// get a single book by ID
-
+// FindByID retrieves a single book by ID
 func (r *BookRepository) FindByID(id uuid.UUID) (*models.Book, error) {
 	var book models.Book
 	err := r.db.First(&book, "id = ?", id).Error
@@ -37,14 +36,19 @@ func (r *BookRepository) FindByID(id uuid.UUID) (*models.Book, error) {
 	return &book, nil
 }
 
-// Update a single book into Database
-
+// Update saves changes to an existing book in the database
 func (r *BookRepository) Update(book *models.Book) error {
 	return r.db.Save(book).Error
 }
 
-// delete a single book by id
-
+// Delete removes a single book by ID from the database
 func (r *BookRepository) Delete(id uuid.UUID) error {
-	return r.db.Delete(&models.Book{}, "id = ?", id).Error
+	result := r.db.Delete(&models.Book{}, "id = ?", id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }

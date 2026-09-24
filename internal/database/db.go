@@ -3,31 +3,29 @@ package database
 import (
 	"fmt"
 	"log"
+
 	"github.com/mamun-jsx/book-shop-backend-go-fiber/config"
 	"github.com/mamun-jsx/book-shop-backend-go-fiber/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// database connection
+// Connect initializes the PostgreSQL database connection and runs migrations
 func Connect(cfg *config.Config) (*gorm.DB, error) {
-	var dltor gorm.Dialector
-
-	// if env does not have any nenon db database
-	if cfg.DATABASEurl != "" {
-		dltor = postgres.Open(cfg.DATABASEurl)
-
-	} else {
-		log.Fatal("Can not find database string as NEON db")
+	if cfg.DATABASEurl == "" {
+		return nil, fmt.Errorf("DATABASE_URL is not set")
 	}
-	db, err := gorm.Open(dltor, &gorm.Config{})
+
+	db, err := gorm.Open(postgres.Open(cfg.DATABASEurl), &gorm.Config{})
 	if err != nil {
-		return nil, fmt.Errorf("Can not open database connection")
+		return nil, fmt.Errorf("cannot open database connection: %w", err)
 	}
+
 	err = db.AutoMigrate(&models.Book{})
 	if err != nil {
-		return nil, fmt.Errorf("Unable to migrate the database table")
+		return nil, fmt.Errorf("unable to migrate database tables: %w", err)
 	}
-	log.Println("🚀 Neon PostgreSQL Connection table successfully migrate ")
+
+	log.Println("🚀 PostgreSQL connection and migration successful")
 	return db, nil
 }

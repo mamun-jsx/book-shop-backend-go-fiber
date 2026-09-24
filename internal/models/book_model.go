@@ -1,8 +1,10 @@
 package models
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Book struct {
@@ -15,4 +17,12 @@ type Book struct {
 	ShortDescription string    `gorm:"type:text" json:"short_description"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
+}
+
+// BeforeCreate hook to generate UUID if not set
+func (b *Book) BeforeCreate(tx *gorm.DB) (err error) {
+	if b.ID == uuid.Nil {
+		b.ID = uuid.New()
+	}
+	return nil
 }

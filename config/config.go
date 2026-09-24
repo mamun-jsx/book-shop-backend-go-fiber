@@ -14,7 +14,7 @@ type Config struct {
 	DATABASEurl string
 }
 
-// ? function to take the value from env and assign into config
+// getEnv retrieves the environment variable or returns the fallback default
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
@@ -22,7 +22,7 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// * Load the env file to project
+// LoadEnv loads environment variables from .env file into Config struct
 func LoadEnv() *Config {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, using system environment variables")
