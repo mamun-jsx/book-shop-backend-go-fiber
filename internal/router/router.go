@@ -11,5 +11,7 @@ func SetupRoutes(fiberApp *fiber.App, application *app.App) {
 	})
 
 	api := fiberApp.Group("/api/v1")
-	_ = api
+	// ==================| Books API |==================
+
+	api.Post("/book", application.BookHandler.CreateBook)
 }
