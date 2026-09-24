@@ -10,13 +10,12 @@ import (
 )
 
 func main() {
-
 	application := app.BootstrapApp()
 	fiberApp := fiber.New()
 	router.SetupRoutes(fiberApp, application)
 	serverAddr := fmt.Sprintf(":%s", application.Config.APPport)
 	log.Printf("🚀 Server is running on http://localhost%s", serverAddr)
 	if err := fiberApp.Listen(serverAddr); err != nil {
-		log.Fatalf("server failed to run : %v", err)
+		log.Fatalf("server failed to run: %v", err)
 	}
 }
